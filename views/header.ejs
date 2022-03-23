@@ -5,4 +5,7 @@
         <link rel="stylesheet" href="https://unpkg.com/mvp.css">
     </head>
     <body>
+        <% if (current !== 'login') { %>
+            <%- include('nav') %>
+        <% } %>
         <article>

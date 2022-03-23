@@ -1,0 +1,21 @@
+<nav>
+    <ul>
+        <%
+            const pages = [
+                { name: 'balance', title: 'Home' },
+                { name: 'deposit', title: 'Deposit' },
+            ]
+
+            for (const page of pages) {
+                const tag = (current === page.name)? 'strong': 'em'
+        %>
+                <li>
+                    <a href="/<%= page.name %>">
+                        <% echo(`<${tag}>${page.title}</${tag}>`) %>
+                    </a>
+                </li>
+        <%
+            }
+        %>
+    </ul>
+</nav>

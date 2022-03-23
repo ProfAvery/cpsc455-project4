@@ -1,27 +1,19 @@
 <%- include('header') %>
-<form method="POST" action="/logout">
-    <header>
-        Account balances for <%= user.username %>
-    </header>
-    <table>
-        <thead>
-            <tr>
-                <th>Account ID</th>
-                <th>Balance</th>
-            </tr>
-        </thead>
-        <% for (const account of accounts) { %>
-            <tr>
-                <td><%= account.id %></td>
-                <td>$<%= account.balance %></td>
-            </tr>
-        <% } %>
-    </table>
-    <p>
-        <a href="/deposit"><i>Make a deposit</i></a>
-    </p>
-    <p>
-        <input type="submit" value="Logout" />
-    </p>
-</form>
+<header>
+    Account balances for <%= username %>
+</header>
+<table>
+    <thead>
+        <tr>
+            <th>Account ID</th>
+            <th>Balance</th>
+        </tr>
+    </thead>
+    <% for (const account of accounts) { %>
+        <tr>
+            <td><%= account.id %></td>
+            <td>$<%= account.balance %></td>
+        </tr>
+    <% } %>
+</table>
 <%- include('footer') %>

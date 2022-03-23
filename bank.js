@@ -14,6 +14,8 @@ const DB_SQL = './bank.sql'
 const app = express()
 
 app.set('view engine', 'ejs')
+app.set('view options', { outputFunctionName: 'echo' })
+
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieSession({
@@ -29,7 +31,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-  res.render('login', { msg: null })
+  res.render('login', { current: 'login', msg: null })
 })
 
 app.post('/login', (req, res) => {
@@ -43,7 +45,7 @@ app.post('/login', (req, res) => {
 
   const user = stmt.get(username)
   if (!user) {
-    res.render('login', { msg: 'an incorrect username or password was entered' })
+    res.render('login', { current: 'login', msg: 'an incorrect username or password was entered' })
     return
   }
 
@@ -56,52 +58,48 @@ app.post('/login', (req, res) => {
       req.session.user_id = user.id
       res.redirect('/balance')
     } else {
-      res.render('login', { msg: 'an incorrect username or password was entered' })
+      res.render('login', { current: 'login', msg: 'an incorrect username or password was entered' })
     }
   })
 })
 
-app.get('/balance', (req, res) => {
+function validateSession (req, res) {
   const userId = req.session.user_id
 
   if (!userId) {
-    res.render('login', { msg: 'invalid session' })
-    return
+    res.render('login', { current: 'login', msg: 'invalid session' })
+    return { userId: null, username: null }
   }
 
-  let stmt = db.prepare('SELECT username FROM users WHERE id = ?')
+  const stmt = db.prepare('SELECT username FROM users WHERE id = ?')
   const user = stmt.get(userId)
 
-  stmt = db.prepare('SELECT id, balance FROM accounts WHERE user_id = ?')
+  return { userId: userId, username: user.username }
+}
+
+app.get('/balance', (req, res) => {
+  const { userId, username } = validateSession(req, res)
+  if (!userId) { return }
+
+  const stmt = db.prepare('SELECT id, balance FROM accounts WHERE user_id = ?')
   const accounts = stmt.all(userId)
 
-  res.render('balance', { user, accounts })
+  res.render('balance', { current: 'balance', username, accounts })
 })
 
 app.get('/deposit', (req, res) => {
-  const userId = req.session.user_id
+  const { userId, username } = validateSession(req, res)
+  if (!userId) { return }
 
-  if (!userId) {
-    res.render('login', { msg: 'invalid session' })
-    return
-  }
-
-  let stmt = db.prepare('SELECT username FROM users WHERE id = ?')
-  const user = stmt.get(userId)
-
-  stmt = db.prepare('SELECT id, balance FROM accounts WHERE user_id = ?')
+  const stmt = db.prepare('SELECT id, balance FROM accounts WHERE user_id = ?')
   const accounts = stmt.all(userId)
 
-  res.render('deposit', { user, accounts })
+  res.render('deposit', { current: 'deposit', username, accounts })
 })
 
 app.post('/deposit', (req, res) => {
-  const userId = req.session.user_id
-
-  if (!userId) {
-    res.render('login', { msg: 'invalid session' })
-    return
-  }
+  const { userId, username } = validateSession(req, res)
+  if (!userId) { return }
 
   const stmt = db.prepare(`
       UPDATE accounts
@@ -113,12 +111,12 @@ app.post('/deposit', (req, res) => {
     stmt.run(deposit.amount, deposit.id)
   }
 
-  res.redirect('/balance')
+  res.redirect('/balance', { current: 'balance', username })
 })
 
 app.post('/logout', (req, res) => {
   req.session = null
-  res.render('login', { msg: 'logged out' })
+  res.render('login', { current: 'login', msg: 'logged out' })
 })
 
 app.get('/transfer/:from/:to/:amount', (req, res) => {
