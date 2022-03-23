@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt')
 const Database = require('better-sqlite3')
 
 const PORT = 8080
+const DB_FILE = './bank.db'
+const DB_SQL = './bank.sql'
 
 const app = express()
 
@@ -19,7 +21,7 @@ app.use(cookieSession({
   maxAge: 20 * 60 * 1000 // 20 minutes
 }))
 
-const db = new Database('./bank.db', { verbose: console.log })
+const db = new Database(DB_FILE, { verbose: console.log })
 db.pragma('foreign_keys = ON')
 
 app.get('/', (req, res) => {
@@ -156,8 +158,18 @@ app.get('/transfer/:from/:to/:amount', (req, res) => {
 })
 
 app.listen(PORT, () => {
-  const setup = fs.readFileSync('./bank.sql', { encoding: 'utf-8' })
-  db.exec(setup)
+  const stmt = db.prepare(`
+    SELECT 1
+    FROM sqlite_master
+    WHERE type = 'table'
+      AND name = 'users'
+  `)
+  const exists = stmt.get()
+
+  if (!exists) {
+    const setup = fs.readFileSync(DB_SQL, { encoding: 'utf-8' })
+    db.exec(setup)
+  }
 
   console.log(`Server running at http://${os.hostname()}:${PORT}/`)
 })
