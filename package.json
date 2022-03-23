@@ -1,5 +1,5 @@
 {
-  "name": "cpsc455-passwd",
+  "name": "cpsc455-project4",
   "version": "1.0.0",
   "description": "CPSC 455 - Spring 2022",
   "scripts": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ProfAvery/cpsc455-passwd.git"
+    "url": "git+https://github.com/ProfAvery/cpsc455-project4.git"
   },
   "author": "Kenytt Avery",
   "license": "UNLICENSED",
