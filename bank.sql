@@ -15,7 +15,7 @@ CREATE TABLE transactions(
     from_id INTEGER REFERENCES accounts(id),
     to_id INTEGER NOT NULL REFERENCES accounts(id),
     amount REAL,
-    txn_time DATE DEFAULT (datetime('now')),
+    txn_date DATE DEFAULT (datetime('now')),
     memo VARCHAR
 );
 

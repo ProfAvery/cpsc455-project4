@@ -9,3 +9,10 @@
             <%- include('nav') %>
         <% } %>
         <article>
+            <% if (msg) { %>
+                <aside>
+                    <p>
+                        <em><%= msg %></em>
+                    </p>
+                </aside>
+            <% } %>

@@ -1,0 +1,29 @@
+<%- include('header') %>
+<header>
+    Transactions for <%= username %>
+</header>
+<table>
+    <thead>
+        <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Memo</th>
+        </tr>
+    </thead>
+    <% for (const txn of transactions) { %>
+        <tr>
+            <td><%= txn.from_id %></td>
+            <td><%= txn.to_id %></td>
+            <td>$<%= txn.amount %></td>
+            <td><%= txn.txn_date %></td>
+            <td><% if (txn.memo.match(/deposit/i)) {
+                    echo(`<i>${txn.memo}</i>`)
+                } else {
+                    echo(txn.memo)
+            } %></td>
+        </tr>
+    <% } %>
+</table>
+<%- include('footer') %>

@@ -1,0 +1,32 @@
+<%- include('header') %>
+<header>
+    Transfer money from <%= username %>
+</header>
+<form method="POST" action="/transfer">
+    <p>
+        <label for="from">From</label>
+        <select id="from" name="from_id">
+            <% for (const account of accounts) { %>
+                <option value="<%= account.id %>">
+                    <%= account.id %>
+                </option>
+            <% } %>
+        </select>
+    </p>
+    <p>
+        <label for="to">To</label>
+        <input id="to" name="to_id" type="number" min="1" />
+    </p>
+    <p>
+        <label for="amt">Amount ($)</label>
+        <input id="amt" name="amount" type="number" min="0" step="0.01" />
+    </p>
+    <p>
+        <label for="memo">Memo</label>
+        <input id="memo" type="text" name="memo" />
+    </p>
+    <p>
+        <input type="submit" value="Transfer" />
+    </p>
+</form>
+<%- include('footer') %>
