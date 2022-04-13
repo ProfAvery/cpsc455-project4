@@ -21,7 +21,7 @@ app.set('view options', { outputFunctionName: 'echo' })
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieSession({
-  secret: 'cpsc455-csrf',
+  secret: 'cpsc455-project4',
   maxAge: 20 * 60 * 1000 // 20 minutes
 }))
 
